@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymity Chat</title>
+    <link rel="icon" type="image/png" href="/seu_favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login-container" class="auth-container">
+        <h2>Entrar</h2>
+        <input type="text" id="login-username" placeholder="Usuário">
+        <input type="password" id="login-password" placeholder="Senha">
+        <button id="login-button">Login</button>
+        <p id="login-error" class="error-message"></p>
+        <p>Não tem uma conta? <span class="link" id="show-register">Registre-se</span></p>
+    </div>
+
+    <div id="register-container" class="auth-container" style="display: none;">
+        <h2>Registrar</h2>
+        <input type="text" id="register-username" placeholder="Novo Usuário">
+        <input type="password" id="register-password" placeholder="Nova Senha">
+        <button id="register-button">Registrar</button>
+        <p id="register-error" class="error-message"></p>
+        <p>Já tem uma conta? <span class="link" id="show-login">Faça Login</span></p>
+    </div>
+
+    <div id="main-chat-layout" class="main-chat-layout" style="display: none;">
+        <header class="chat-header">
+            <h1 class="chat-title">Anonymity Chat</h1>
+            <p id="current-user">Conectado como: </p>
+            <div class="header-buttons">
+                <button onclick="openDonationModal()">Doar <i class="fas fa-hand-holding-usd"></i></button>
+                <a href="avisos.html" class="header-link" target="_blank">Avisos <i class="fas fa-bullhorn"></i></a>
+                <a href="vip_benefits.html" class="header-link" target="_blank">VIP <i class="fas fa-crown"></i></a>
+                <a href="proposito.html" class="header-link" target="_blank">Propósito <i class="fas fa-lightbulb"></i></a>
+                <a href="contato.html" class="header-link" target="_blank">Contato <i class="fas fa-envelope"></i></a>
+            </div>
+        </header>
+
+        <div class="chat-main-content">
+            <div class="sidebar">
+                <h3>Salas Ativas:</h3>
+                <ul id="active-rooms-list">
+                    </ul>
+                <div class="room-management">
+                    <input type="text" id="create-room-name" placeholder="Nova Sala">
+                    <button id="create-room-btn">Criar Sala</button>
+                    <input type="text" id="join-room-name" placeholder="Entrar em Sala">
+                    <button id="join-room-btn">Entrar</button>
+                </div>
+                <p id="current-room" class="current-room">Sala atual: Público</p>
+            </div>
+
+            <div class="chat-area">
+                <div class="messages" id="messages">
+                    </div>
+
+                <div id="image-preview-container" style="display: none; margin-top: 10px; text-align: center;">
+                    <img id="image-preview" src="#" alt="Pré-visualização da imagem" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                    <button id="clear-image-btn" class="clear-button"><i class="fas fa-times-circle"></i> Cancelar Imagem</button>
+                </div>
+                <div class="message-input-area">
+                    <input type="text" id="message-input" placeholder="Digite sua mensagem...">
+
+                    <label for="image-upload" class="image-upload-label" title="Enviar Imagem">
+                        <i class="fas fa-image"></i>
+                        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    </label>
+                    <button id="send-button"><i class="fas fa-paper-plane"></i> Enviar</button>
+                    <button id="start-record-btn"><i class="fas fa-microphone"></i> Gravar Áudio</button>
+                    <button id="stop-record-btn" style="display: none;"><i class="fas fa-stop-circle"></i> Parar Gravação</button>
+                </div>
+                <audio id="audio-preview" controls style="display: none;"></audio>
+            </div>
+        </div>
+    </div>
+
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeDonationModal()">&times;</span>
+            <h2>Apoie o Anonymity Chat</h2>
+            <p>Se você gosta do nosso serviço e gostaria de nos ajudar a mantê-lo funcionando e aprimorá-lo, considere fazer uma doação.</p>
+            <div class="donation-options">
+                <div class="crypto-option">
+                    <h3>Bitcoin (BTC)</h3>
+                    <p id="btc-address" class="address">bc1qj4g6h3x8n3w2k6y5z7x9m1p3r5t7u9v1w3y5z7</p>
+                    <button onclick="copyAddress('btc-address')">Copiar Endereço</button>
+                </div>
+                <div class="crypto-option">
+                    <h3>Ethereum (ETH) ERC-20</h3>
+                    <p id="eth-address" class="address">0x1234567890abcdef1234567890abcdef12345678</p>
+                    <button onclick="copyAddress('eth-address')">Copiar Endereço</button>
+                </div>
+                </div>
+            <p class="small-text">Sua doação ajuda a cobrir custos de servidor, desenvolvimento e manutenção.</p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8047537722016072"
+     crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="fluid"
+         data-ad-layout-key="-gs-3+1f-3d+2z"
+         data-ad-client="ca-pub-8047537722016072"
+         data-ad-slot="8894007416"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <script>
+        // Funções para o modal de doação (já existentes, apenas garantindo que estejam aqui)
+        function openDonationModal() {
+            document.getElementById('donationModal').style.display = 'flex'; // Usar flex para centralizar
+        }
+
+        function closeDonationModal() {
+            document.getElementById('donationModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('donationModal');
+            if (event.target == modal) {
+                closeDonationModal();
+            }
+        }
+
+        function copyAddress(elementId) {
+            const addressElement = document.getElementById(elementId);
+            const address = addressElement.innerText;
+
+            navigator.clipboard.writeText(address).then(() => {
+                const originalText = addressElement.innerText;
+                addressElement.innerText = 'Copiado!';
+                setTimeout(() => {
+                    addressElement.innerText = originalText;
+                }, 1500);
+
+                alert('Endereço copiado para a área de transferência: ' + address);
+            }).catch(err => {
+                console.error('Falha ao copiar o texto: ', err);
+                alert('Erro ao copiar o endereço. Por favor, copie manualmente: ' + address);
+            });
+        }
+    </script>
+</body>
+</html>
